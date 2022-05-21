@@ -53,3 +53,15 @@ def UserView(request,username):
     context['txnHistory'] = response
 
     return render(request,'user.html',context)
+
+def uploadIPFS(request,user):
+    imageobjs = Image.objects.filter(username=user)
+    nstorage = {}
+    c = NftStorage(NFTSTORAGE_API_KEY)
+
+    for imgobj in imageobjs:
+        img = imgobj.image 
+        imgpath = BASE_DIR + user + '/images/' + img 
+        cid = c.upload(imgpath, 'image/png')
+        imgobj.cid = cid
+        imgobj.save()
