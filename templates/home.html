@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+
+</head>
+
+<body>
+    Home Page
+
+    <button onClick="connectWallet()" id="connect-wallet">Connect to Wallet</button>
+
+    <form method="post" action="{% url 'home' %}" id="form-id" class="mx-1 mx-md-4">
+        {% csrf_token %}
+        <input type="hidden" name="coinBaseWalletAddress" id="coinBaseWalletAddress">
+
+        <input type="text" name="username" id="username" hidden />
+
+        <button type="submit" id="btn-submit" hidden onclick="">Submit</button>
+
+    </form>
+
+
+</body>
+
+
+<script>
+
+    async function connectWallet() {
+
+        if (window.ethereum) {
+            console.log(window.ethereum.providers[0].isCoinbaseWallet);
+            console.log(window.ethereum);
+            const provider_t = new ethers.providers.Web3Provider(window.ethereum.providers[0]);
+            const signer_t = provider_t.getSigner();
+            const allWalletAccounts = await window.ethereum.providers[0].request({ method: 'eth_requestAccounts' });
+            console.log(allWalletAccounts);
+            document.getElementById('coinBaseWalletAddress').value = allWalletAccounts[0];
+            document.getElementById('username').removeAttribute("hidden");
+            document.getElementById('btn-submit').removeAttribute("hidden");
+            document.getElementById('connect-wallet').hidden = true;
+        }
+    }
+
+
+
+</script>
+
+</html>
