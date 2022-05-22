@@ -5,6 +5,8 @@ from polype.views import *
 urlpatterns = [
 
     path('',Home,name='home'),
-    path('user/<str:username>/',UserView,name='userview')
+    path('user/<str:username>/',UserView,name='userview'),
+    path('TXN/<str:username>/',TxnHistory,name='txnhistory')
+
 
 ]

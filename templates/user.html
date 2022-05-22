@@ -5,21 +5,55 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Polype</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 70%;
+        }
+
+        td,
+        th {
+            border: 1px solid #df8181;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        body {
+            background: linear-gradient(90deg, rgb(246, 169, 169) 0%, rgb(217, 220, 215) 50%);
+
+        }
+    </style>
+
 </head>
 
 <body>
-    WalletAddress: {{walletAddress}}
-    <p>
-        username: {{username}}
-    </p>
-    <div style="margin: auto">
-        {{ svg|safe }}
-    </div>
-    </div>
-    <p>
-        {{txnHistory}}
-    </p>
+    <center style="padding: 30px;">
+        <img src="https://img.icons8.com/office/344/name.png" style="width:10%; height:10%;" />
+    </center>
+    <table style="margin-left: 200px;">
+        <tr>
+            <td><b>User Name:
+                </b></td>
+            <td><b>{{username}} </b> </td>
+        </tr>
+        <tr>
+            <td><b>Wallet Address: </b></td>
+            <td><b>{{walletAddress}} &nbsp; <a href="{% url 'txnhistory' username %}">Click Here to View all
+                        Trasanction</a></b>
+            </td>
+        </tr>
+        <tr>
+            <td><b>QR Code: </b></td>
+            <td> {{ svg|safe }}</td>
+        </tr>
+
+    </table>
 
 </body>
 

@@ -4,6 +4,9 @@ import qrcode
 import qrcode.image.svg
 from io import BytesIO
 import requests
+import pandas as pd
+import io
+import json
 
 #https://docs.polygonscan.com/v/mumbai-polygonscan/
 API_KEY='26HRQTXB2S9AF97GPBT6RHTEUAEQA7HQUI'
@@ -30,11 +33,7 @@ def Home(request):
 
 
 def UserView(request,username):
-    if User.objects.filter(username=username).exists():
-        obj = User.objects.get(username=username)
-    else:
-        obj=None
-    
+    obj = User.objects.get(username=username)
     context = {'walletAddress':obj.walletAddress,'username':obj.username}
 
     factory = qrcode.image.svg.SvgImage
@@ -43,15 +42,7 @@ def UserView(request,username):
     img.save(stream)
     context["svg"] = stream.getvalue().decode()
 
-    BASE_URL = 'https://api-testnet.polygonscan.com/api?module=account&action=txlist&address='
-    END_URL = '&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=26HRQTXB2S9AF97GPBT6RHTEUAEQA7HQUI'
-
-    url = BASE_URL + str(obj.walletAddress) + END_URL
-    print(url)
-    response = (requests.get(url)).json()
-    print(response)
-    context['txnHistory'] = response
-
+    
     return render(request,'user.html',context)
 
 def uploadIPFS(request,user):
@@ -65,3 +56,19 @@ def uploadIPFS(request,user):
         cid = c.upload(imgpath, 'image/png')
         imgobj.cid = cid
         imgobj.save()
+
+def TxnHistory(request,username):
+
+    user = User.objects.get(username=username)
+    context={'user':user}
+
+    BASE_URL = 'https://api-testnet.polygonscan.com/api?module=account&action=txlist&address='
+    END_URL = '&startblock=0&endblock=99999999&page=1&offset=10&sort=asc&apikey=26HRQTXB2S9AF97GPBT6RHTEUAEQA7HQUI'
+
+    url = BASE_URL + str(user.walletAddress) + END_URL
+    print(url)
+    response = (requests.get(url)).json()
+    context['txnHistory'] = response['result']
+    with open('data.json', 'w') as f:
+        json.dump(response, f)
+    return render(request,"txnhistory.html",context)
